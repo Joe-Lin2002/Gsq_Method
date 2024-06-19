@@ -1,0 +1,35 @@
+# Ignore video files
+
+# Common video file extensions
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.m4v
+*.mpeg
+*.mpg
+*.3gp
+*.ogv
+*.ts
+
+# Ignore video files in all subdirectories
+**/*.mp4
+**/*.mkv
+**/*.avi
+**/*.mov
+**/*.wmv
+**/*.flv
+**/*.webm
+**/*.m4v
+**/*.mpeg
+**/*.mpg
+**/*.3gp
+**/*.ogv
+**/*.ts
+
+# Ignore files ending with postProcessingWorkspace.mat
+*postProcessingWorkspace.mat
+**/*postProcessingWorkspace.mat
