@@ -55,10 +55,6 @@ end
 
 %% Processing
 for frame = 1:nFrames %Loops for total number of images
-    figure(1)
-    imshow(img);
-
-    
     imageFile = [directory,files(frame).name]; %input filename
     img = image_process(imread(imageFile)); %read a color image that has particles in red and forces in green channel
     Rimg = img(:,:,1); %particle image
@@ -69,7 +65,13 @@ for frame = 1:nFrames %Loops for total number of images
     Gimg = Gimg.*(Gimg > 0);
     Gimg = imadjust(Gimg,stretchlim(Gimg));
     particle = particle_trace(Rimg, RlargeH, SL, RsmallH, SS, pxPerMeter, fsigma);
-    
+
+    figure(1); %Draw the particle Image
+    imshow(Rimg);
+
+    figure(2); %Draw the Force Image
+    imshow(Gimg);
+
     N = length(particle);
 
     % Delete overlapping particles
@@ -106,6 +108,7 @@ for frame = 1:nFrames %Loops for total number of images
     end
     N = length(particle);
 
+    %add some information about the particles to the plots
     figure(1)
     for n=1:N
         viscircles([particle(n).x; particle(n).y]', particle(n).r,'EdgeColor',particle(n).color); %draw particle outline
@@ -113,4 +116,36 @@ for frame = 1:nFrames %Loops for total number of images
         plot(particle(n).x,particle(n).y,'rx'); %Mark particle centers
         text(particle(n).x,particle(n).y,num2str(particle(n).id),'Color','w');
     end
+    figure(2)
+    for n=1:N
+        viscircles([particle(n).x; particle(n).y]', particle(n).r,'EdgeColor',particle(n).color); %draw particle outline
+        hold on
+        plot(particle(n).x,particle(n).y,'rx'); %Mark particle centers
+        text(particle(n).x,particle(n).y,num2str(particle(n).id),'Color','w');
+    end
+    drawnow;
+
+    particle = neighbour_find(Gimg, contactG2Threshold, dtol, CR, verbose, particle, override);
+
+    figure(3);
+    imshow(Gimg); hold on
+    for n = 1:N
+        z = particle(n).z; %get particle coordination number
+        if (z>0) %if the particle does have contacts
+            for m = 1:z %for each contact
+                %draw contact lines
+                lineX(1)=particle(n).x;
+                lineY(1)=particle(n).y;
+                lineX(2) = lineX(1) + particle(n).r * cos(particle(n).betas(m));
+                lineY(2) = lineY(1) + particle(n).r * sin(particle(n).betas(m));
+                cX = lineX(1) + (particle(n).r-CR) * cos(particle(n).betas(m));
+                cY = lineY(1) + (particle(n).r-CR) * sin(particle(n).betas(m));
+                hold on; % Don't blow away the image.
+                plot(lineX, lineY,'-y','LineWidth',2);hold on;
+            end
+        end
+    end
+
+    %Save what we got so far
+    save([directory, files(frame).name(1:end-4),'_preprocessing.mat'],'particle');
 end
