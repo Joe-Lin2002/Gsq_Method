@@ -10,7 +10,9 @@ dataPath = fullfile('DATA', 'static_verification', 'IMG_0765_solved.mat-postProc
 load(dataPath);
 
 % Extract necessary variables
-g2 = [particle.g2];
+for i = 1:length(particle)
+    g2(i) = mean(particle(i).contactG2s);
+end
 x = [particle.x];
 y = [particle.y];
 r = [particle.r];
