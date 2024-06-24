@@ -45,8 +45,8 @@ elseif load_calibration == false %Manually define values and save
     dtol = 5; % How far away can the outlines of 2 particles be to still be considered Neighbours
     override = 1770; % Self assign a value for the top wall for container detection
 
-    contactG2Threshold = 5; %sum of g2 in a contact area larger than this determines a valid contact
-    CR = 15; %radius around a contactact point that is checked for contact validation
+    contactG2Threshold = 15; %sum of g2 in a contact area larger than this determines a valid contact
+    CR = 20; %radius around a contactact point that is checked for contact validation
 
     if save_calibration==true
         save([directory,file_name(1:end-4),'_config.mat']);
